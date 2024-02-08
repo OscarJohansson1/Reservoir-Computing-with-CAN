@@ -118,7 +118,7 @@ public class Classifier {
         Random random = new Random();
         int[][] input = new int[length][2];
         for (int i = 0; i < length; i++) {
-            int period = random.nextInt(6) + 3;
+            int period = random.nextInt(5) + 3;
             if (i % period == 1) {
                 input[i] = new int[]{1, 0}; // a
             } else { // else random
