@@ -1,20 +1,63 @@
 import Graphs.Graph;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 public class Classifier {
     public static void main(String[] args) {
         Classifier classifier = new Classifier();
 
-        for (int i = 0; i < 10; i++) {
-            System.out.println(classifier.aBitOfEverything(true , false, i));
+        //classifier.loadToFile();
+        classifier.findMax();
+
+        //for (int i = 0; i < 10; i++) {
+        //    System.out.println(classifier.aBitOfEverything(false , false, i));
+        //}
+    }
+
+    private void findMax() {
+        double max = 0;
+        double current;
+        for (int i = 0; i < 1000000; i++) {
+            current = aBitOfEverything(false, false, 0);
+            if (current > max) {
+                max = current;
+            }
+            if (i % 100 == 0) {
+                System.out.println("Iteration: " + i + ", Max: " + max);
+            }
+        }
+    }
+
+    private void loadToFile() {
+        double[] data = new double[1000];
+        for (int i = 0; i < 1000; i++) {
+            data[i] = aBitOfEverything(false , false, 0);
+            if (i % 100 == 0) {
+                System.out.println("Iteration: " + i);
+            }
+        }
+
+        // File to write the data
+        String filename = "numbers.txt";
+
+        // Use try-with-resources to ensure the FileWriter is closed properly
+        try (FileWriter writer = new FileWriter(filename)) {
+            for (double d : data) {
+                writer.write(d + "\n"); // Write each number to the file, followed by a newline
+            }
+            System.out.println("Data written to " + filename);
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
     private double aBitOfEverything(boolean verbose, boolean plot, int iteration) {
         int numberOfNodes = 10;
         int numberOfInputNodes = 2; // Cannot change right now
-        int history = 30;
+        int history = 20;
         double learningRate = 0.01;
         int trainIterations = 1000;
         int trainSize = 400;
@@ -87,6 +130,11 @@ public class Classifier {
             graph.printGraphInfo(weights);
         }
 
+        double score = sum / testSize;
+
+        if (score > 0.9) {
+            graph.printGraphInfo(weights);
+        }
 
 
         return sum / testSize;
@@ -120,7 +168,7 @@ public class Classifier {
         Random random = new Random();
         int[][] input = new int[length][2];
         for (int i = 0; i < length; i++) {
-            int period = 5; // random.nextInt(5) + 3;
+            int period = random.nextInt(5) + 5;
             if (i % period == 1) {
                 input[i] = new int[]{1, 0}; // a
             } else { // else random
