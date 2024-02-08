@@ -6,15 +6,15 @@ public class Classifier {
     public static void main(String[] args) {
         Classifier classifier = new Classifier();
 
-        for (int i = 0; i < 2; i++) {
-            System.out.println(classifier.aBitOfEverything(true, i));
+        for (int i = 0; i < 10; i++) {
+            System.out.println(classifier.aBitOfEverything(true , false, i));
         }
     }
 
-    private double aBitOfEverything(boolean verbose, int iteration) {
+    private double aBitOfEverything(boolean verbose, boolean plot, int iteration) {
         int numberOfNodes = 10;
         int numberOfInputNodes = 2; // Cannot change right now
-        int history = 20;
+        int history = 30;
         double learningRate = 0.01;
         int trainIterations = 1000;
         int trainSize = 400;
@@ -52,14 +52,15 @@ public class Classifier {
                 if (prediction == 0) {
                     sum++;
                 }
-                if (i < 4) {
-                    int[] h = graph.getHistory();
-                    int[][] hPlot = new int[history][numberOfNodes];
-                    for (int j = 0; j < h.length; j++) {
-                        hPlot[j % history][j / history] = h[j];
+                if (plot) {
+                    if (i < 4) {
+                        int[] h = graph.getHistory();
+                        int[][] hPlot = new int[history][numberOfNodes];
+                        for (int j = 0; j < h.length; j++) {
+                            hPlot[j % history][j / history] = h[j];
+                        }
+                        GridPlotter.createAndShowGui(hPlot, iteration, "random");
                     }
-
-                    GridPlotter.createAndShowGui(hPlot, iteration, "random");
                 }
             } else {
                 graph.updateNodesTTimes(generateHarderPeriodicInput(inputLength));
@@ -67,14 +68,15 @@ public class Classifier {
                 if (prediction == 1) {
                     sum++;
                 }
-                if (i < 4) {
-                    int[] h = graph.getHistory();
-                    int[][] hPlot = new int[history][numberOfNodes];
-                    for (int j = 0; j < h.length; j++) {
-                        hPlot[j % history][j / history] = h[j];
+                if (plot) {
+                    if (i < 4) {
+                        int[] h = graph.getHistory();
+                        int[][] hPlot = new int[history][numberOfNodes];
+                        for (int j = 0; j < h.length; j++) {
+                            hPlot[j % history][j / history] = h[j];
+                        }
+                        GridPlotter.createAndShowGui(hPlot, iteration, "periodic");
                     }
-
-                    GridPlotter.createAndShowGui(hPlot, iteration, "periodic");
                 }
             }
             graph.randomizeStateOfGraph();
@@ -118,7 +120,7 @@ public class Classifier {
         Random random = new Random();
         int[][] input = new int[length][2];
         for (int i = 0; i < length; i++) {
-            int period = random.nextInt(6) + 3;
+            int period = 5; // random.nextInt(5) + 3;
             if (i % period == 1) {
                 input[i] = new int[]{1, 0}; // a
             } else { // else random
@@ -127,13 +129,6 @@ public class Classifier {
                 } else {
                     input[i] = new int[]{0, 1}; // b
                 }
-            }
-        }
-        for (int i = 0; i < length; i++) {
-            if (i / 10 % 2 == 1) {
-                input[i] = new int[]{1, 0}; // a
-            } else {
-                input[i] = new int[]{0, 1}; // b
             }
         }
         return input;
