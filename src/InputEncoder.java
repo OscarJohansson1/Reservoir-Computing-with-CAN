@@ -28,6 +28,10 @@ public class InputEncoder implements Iterable<int[]> {
         this.sentence = sentence.toLowerCase();
     }
 
+    public InputEncoder() {
+        this.sentence = null;
+    }
+
     private int[] oneHotEncode(char character) {
         int[] encoding = new int[ALPHABET_SIZE];
         if (character >= 'a' && character <= 'z') {
@@ -38,6 +42,15 @@ public class InputEncoder implements Iterable<int[]> {
             encoding[27] = 1;
         }
         return encoding;
+    }
+
+    public int[][] oneHotEncodeSentence(String sentence) {
+        int[][] input = new int[sentence.length()][ALPHABET_SIZE];
+        int i = 0;
+        for (char character : sentence.toCharArray()) {
+            input[i++] = oneHotEncode(character);
+        }
+        return input;
     }
 
     @Override

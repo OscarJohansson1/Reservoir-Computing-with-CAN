@@ -47,6 +47,13 @@ public class Graph {
             current.addNeighbor(nodes[secondNumber]);
         }
 
+        for (InputNode node : inputNodes) {
+            int randomNumber = random.nextInt(numberOfNodes);
+            nodes[randomNumber].changeRandomNeighbor(node);
+        }
+
+        /**
+         *
         do {
             firstNumber = random.nextInt(numberOfNodes);
             secondNumber = random.nextInt(numberOfNodes);
@@ -55,11 +62,14 @@ public class Graph {
         nodes[firstNumber].changeRandomNeighbor(inputNodes[0]);
         nodes[secondNumber].changeRandomNeighbor(inputNodes[1]);
 
+        **/
+
         for (Node node : nodes) {
             if (!node.checkNeighbors()) {
                 throw new IllegalStateException("A node in the graph does not have two neighbors");
             }
         }
+
     }
 
     public void updateNodes(int[] inputState) {
