@@ -1,10 +1,11 @@
-
-
 # Master's Thesis Project: Reservoir Computing with Cellular Automata Networks
-Oscar Johansson, Chalmers University of Technology
+Author:
+Oscar Johansson, Chalmers University of Technology, Sweden
+
+Last updated: 2024-02-09
 
 ## Overview
-This 
+This is ...
 
 ## Installation
 No installation needed. Only standard Java libraries are used.
@@ -29,6 +30,5 @@ Feel free to contact me
 
 - Name: Oscar Johansson
 - Email: johaosc@chalmers.se
-- Project Link: [[GitHub Repository URL]](https://github.com/OscarJohansson1/Reservoir-Computing-with-CAN.git)
 
 
