@@ -4,7 +4,7 @@ Oscar Johansson, Chalmers University of Technology, Sweden
 
 Email: johaosc@chalmers.se
 
-Supervisor: Zoran Konkoli
+Supervisor: Zoran Konkoli, MC2, Chalmers University of Technology
 
 Last updated: 2024-02-20
 
