@@ -20,6 +20,44 @@ public class Graph {
         this.inputNodes = new InputNode[numberOfInputNodes];
     }
 
+    public void generateGraphSetRules(int[] rules) {
+        int firstNumber;
+        int secondNumber;
+
+        for (int i = 0; i < numberOfInputNodes; i++) {
+            inputNodes[i] = new InputNode(numberOfNodes + i + 100);
+        }
+
+        for (int i = 0; i < numberOfNodes; i++) {
+            int ruleIndex = random.nextInt(rules.length);
+            nodes[i] = new Node(i, rules[ruleIndex], historyLength);
+        }
+
+        for (int i = 0; i < numberOfNodes; i++) {
+            Node current = nodes[i];
+
+
+            do {
+                firstNumber = random.nextInt(numberOfNodes);
+                secondNumber = random.nextInt(numberOfNodes);
+            } while (firstNumber == i || secondNumber == i || firstNumber == secondNumber);
+
+            current.addNeighbor(nodes[firstNumber]);
+            current.addNeighbor(nodes[secondNumber]);
+        }
+
+        for (InputNode node : inputNodes) {
+            int randomNumber = random.nextInt(numberOfNodes);
+            nodes[randomNumber].changeRandomNeighbor(node);
+        }
+
+        for (Node node : nodes) {
+            if (!node.checkNeighbors()) {
+                throw new IllegalStateException("A node in the graph does not have two neighbors");
+            }
+        }
+    }
+
     public void generateGraph() {
         int firstNumber;
         int secondNumber;
