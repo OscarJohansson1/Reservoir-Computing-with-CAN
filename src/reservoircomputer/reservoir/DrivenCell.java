@@ -1,10 +1,10 @@
-package Graphs;
+package reservoircomputer.reservoir;
 
-public class InputNode implements iNode {
+public class DrivenCell implements Cell {
     private final int identity;
     private int currentState;
 
-    public InputNode(int identity) {
+    public DrivenCell(int identity) {
         this.identity = identity;
         this.currentState = Math.random() < 0.5 ? 0 : 1;
     }

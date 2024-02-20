@@ -1,18 +1,21 @@
+package reservoircomputer;
+
+import java.util.Arrays;
 
 public class ReadoutLayer {
     private final double THRESHOLD = 0.5;
     private final double[] weights; // Model weights
     private final double learningRate; // Learning rate for gradient descent
-    private final int iterations; // Number of iterations for training
-    private final int historyLength;
-    private final int numberOfNodes;
+    private final int epochs; // Number of iterations for training
+    private final int recordedHistoryLength;
+    private final int nAutomataCells;
 
-    public ReadoutLayer(int numberOfNodes, int historyLength, double learningRate, int iterations) {
-        this.weights = new double[numberOfNodes * historyLength + 1]; // +1 for bias term
+    public ReadoutLayer(int nAutomataCells, int recordedHistoryLength, double learningRate, int epochs) {
+        this.weights = new double[nAutomataCells * recordedHistoryLength + 1]; // +1 for bias term
         this.learningRate = learningRate;
-        this.iterations = iterations;
-        this.historyLength = historyLength;
-        this.numberOfNodes = numberOfNodes;
+        this.epochs = epochs;
+        this.recordedHistoryLength = recordedHistoryLength;
+        this.nAutomataCells = nAutomataCells;
     }
 
     private double sigmoid(double z) {
@@ -20,7 +23,7 @@ public class ReadoutLayer {
     }
 
     public void train(int[][] X, int[] y) {
-        for (int iter = 0; iter < iterations; iter++) {
+        for (int iter = 0; iter < epochs; iter++) {
             double[] gradients = new double[weights.length];
 
             // Calculate gradients for each weight
@@ -54,27 +57,27 @@ public class ReadoutLayer {
     }
 
     public double[][] getAverageAndStdWeights() {
-        double[][] results = new double[2][numberOfNodes]; // First row for averages, second row for std devs
-        for (int node = 0; node < numberOfNodes; node++) {
+        double[][] results = new double[2][nAutomataCells]; // First row for averages, second row for std devs
+        for (int node = 0; node < nAutomataCells; node++) {
             double sum = 0;
-            double[] nodeWeights = new double[historyLength];
+            double[] nodeWeights = new double[recordedHistoryLength];
 
             // Compute the sum and fill the nodeWeights array
-            for (int i = 0; i < historyLength; i++) {
-                double weight = weights[node * historyLength + i];
+            for (int i = 0; i < recordedHistoryLength; i++) {
+                double weight = weights[node * recordedHistoryLength + i];
                 sum += weight;
                 nodeWeights[i] = weight;
             }
 
-            double average = sum / historyLength;
+            double average = sum / recordedHistoryLength;
             results[0][node] = average; // Store average
 
             // Compute standard deviation
             double sumOfSquares = 0;
-            for (int i = 0; i < historyLength; i++) {
+            for (int i = 0; i < recordedHistoryLength; i++) {
                 sumOfSquares += Math.pow(nodeWeights[i] - average, 2);
             }
-            double standardDeviation = Math.sqrt(sumOfSquares / historyLength);
+            double standardDeviation = Math.sqrt(sumOfSquares / recordedHistoryLength);
             results[1][node] = standardDeviation; // Store std deviation
         }
 

@@ -1,18 +1,19 @@
-package Graphs;
+package reservoircomputer.reservoir;
 
 import java.util.*;
 
-public class MultiNode implements iNode {
+public class AutomataCell implements Cell {
     private final int identity;
     private int currentState;
     private int nextState;
     private final String binaryRule;
-    private List<iNode> neighbors;
+    private List<Cell> neighbors;
     private final Queue<Integer> history;
     private final int historyLength;
+    private final Random random = new Random();
 
 
-    public MultiNode(int identity, int rule, int historyLength) {
+    public AutomataCell(int identity, int rule, int historyLength) {
         this.identity = identity;
         this.currentState = Math.random() < 0.5 ? 0 : 1;
         this.nextState = -1;
@@ -23,12 +24,12 @@ public class MultiNode implements iNode {
         this.historyLength = historyLength;
     }
 
-    public MultiNode(int identity, int rule) {
+    public AutomataCell(int identity, int rule) {
         // Call the other constructor with a default historyLength value
         this(identity, rule, 10);
     }
 
-    public void addNeighbor(iNode neighbor) {
+    public void addNeighbor(Cell neighbor) {
         // Has left / right neighbour
         neighbors.add(neighbor);
     }
@@ -49,7 +50,7 @@ public class MultiNode implements iNode {
         if (neighbors.isEmpty()) {
             sb.append("None  ");
         } else {
-            for (iNode neighbor : neighbors) {
+            for (Cell neighbor : neighbors) {
                 sb.append(neighbor.getIdentity()).append(", ");
             }
         }
@@ -57,9 +58,9 @@ public class MultiNode implements iNode {
         return sb.substring(0, Math.max(0, sb.length() - 2));
     }
 
-    public boolean isNeighbor(iNode node) {
+    public boolean isNeighbor(Cell node) {
         int identity = node.getIdentity();
-        for (iNode neighbor : neighbors) {
+        for (Cell neighbor : neighbors) {
             if (neighbor.getIdentity() == identity) {
                 return true;
             }
@@ -75,7 +76,7 @@ public class MultiNode implements iNode {
         currentState = Math.random() < 0.5 ? 0 : 1;
     }
 
-    public int getNumNeighbors() {
+    public int getNeighborhoodSize() {
         return neighbors.size();
     }
 
@@ -83,18 +84,9 @@ public class MultiNode implements iNode {
         neighbors = new ArrayList<>();
     }
 
-    public void removeNeighbor(int identity) {
-        iNode nodeToRemove = null;
-        for (iNode neighbor : neighbors) {
-            if (neighbor.getIdentity() == identity) {
-                nodeToRemove = neighbor;
-                break;
-            }
-        }
-        if (nodeToRemove == null) {
-            throw new IllegalStateException("Tries to remove node as neighbor, that is not a neighbor");
-        }
-        neighbors.remove(nodeToRemove);
+    public void removeRandomNeighbor() {
+        int cellToRemoveIndex = random.nextInt(neighbors.size());
+        neighbors.remove(cellToRemoveIndex);
     }
 
     public void shuffleNeighbors() {
@@ -125,10 +117,10 @@ public class MultiNode implements iNode {
                 }
             }
 
-            if (sum / len > 0.5) {
-                nextState = 1;
-            } else {
+            if (sum / ((double) (len * (len - 1)) / 2) < 0.5) {
                 nextState = 0;
+            } else {
+                nextState = 1;
             }
         }
     }

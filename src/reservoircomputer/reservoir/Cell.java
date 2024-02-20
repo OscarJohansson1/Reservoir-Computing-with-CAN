@@ -1,6 +1,6 @@
-package Graphs;
+package reservoircomputer.reservoir;
 
-public interface iNode {
+public interface Cell {
     public int getCurrentState();
     public int getIdentity();
 }
