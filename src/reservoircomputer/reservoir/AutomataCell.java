@@ -105,6 +105,7 @@ public class AutomataCell implements Cell {
 
     public void applyRule() {
         int len = neighbors.size();
+        int count = 0;
         if (len == 0) {
             nextState = currentState;
         } else if (len == 1) {
@@ -114,10 +115,11 @@ public class AutomataCell implements Cell {
             for (int i = 0; i < len - 1; i++) {
                 for (int j = i + 1; j < len; j++) {
                     sum += applySingleRule(neighbors.get(i).getCurrentState(), neighbors.get(j).getCurrentState());
+                    count++;
                 }
             }
 
-            if (sum / ((double) (len * (len - 1)) / 2) < 0.5) {
+            if (sum / count < 0.5) {
                 nextState = 0;
             } else {
                 nextState = 1;

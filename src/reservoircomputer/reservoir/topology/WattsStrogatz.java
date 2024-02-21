@@ -9,6 +9,7 @@ public class WattsStrogatz extends RandomNetwork {
 
     @Override
     public void generateGraph(int[] rules) {
+        boolean success;
         int h = 2 * (int) Math.floor(density * (numberOfNodes - 1));
         int k = (int) density * numberOfNodes * (numberOfNodes - 1);
         int r = k - numberOfNodes * h / 2;
@@ -31,23 +32,14 @@ public class WattsStrogatz extends RandomNetwork {
             for (int j = 1; j < h / 2; j++) {
                 if (Math.random() < 0.9) {
                     neighborNode = automataCells.get((i + j) % numberOfNodes);
-                    addLinkRandomOrientation(currentNode, neighborNode);
-                } else {
-                    while (true) {
-                        firstIndex = random.nextInt(numberOfNodes - h / 2 - 1);
-                        neighborNode = automataCells.get((i + firstIndex) % numberOfNodes);
-                        if (!(currentNode.isNeighbor(neighborNode) || neighborNode.isNeighbor(currentNode))) {
-                            addLinkRandomOrientation(currentNode, neighborNode);
-                            break;
-                        } else if (currentNode.isNeighbor(neighborNode)) {
-                            neighborNode.addNeighbor(currentNode);
-                            break;
-                        } else if (neighborNode.isNeighbor(currentNode)) {
-                            currentNode.addNeighbor(neighborNode);
-                            break;
-                        }
-                    }
+                    success = addNeighbors(currentNode, neighborNode);
+                    if (success) continue;
                 }
+                do {
+                    firstIndex = random.nextInt(numberOfNodes - h / 2 - 1);
+                    neighborNode = automataCells.get((i + firstIndex) % numberOfNodes);
+                    success = addNeighbors(currentNode, neighborNode);
+                } while (!success);
             }
         }
 

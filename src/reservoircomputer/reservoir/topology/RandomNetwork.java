@@ -27,15 +27,6 @@ public abstract class RandomNetwork {
 
     public abstract void generateGraph(int[] rules);
 
-    void addLinkRandomOrientation(AutomataCell a, AutomataCell b) {
-        if (Math.random() < 0.5) {
-            a.addNeighbor(b);
-        } else {
-            b.addNeighbor(a);
-        }
-    }
-
-
     public void updateNodes(int[] inputState) {
         if (inputState.length != numberOfInputNodes) {
             throw new IllegalStateException("Wrong dimension on next input state");
@@ -84,6 +75,29 @@ public abstract class RandomNetwork {
                     ", Rule: " + node.getRule() +
                     ", Weight: " + String.format("%.4f", weights[0][i]) + " (" + String.format("%.4f", weights[1][i++]) + ")");
         }
+    }
+
+    void addLinkRandomOrientation(AutomataCell a, AutomataCell b) {
+        if (Math.random() < 0.5) {
+            a.addNeighbor(b);
+        } else {
+            b.addNeighbor(a);
+        }
+    }
+
+    boolean addNeighbors(AutomataCell a, AutomataCell b) {
+        boolean ab = a.isNeighbor(b);
+        boolean ba = b.isNeighbor(a);
+        if (ab && ba) {
+            return false; // Already 2-way neighbors
+        } else if (ab) {
+            b.addNeighbor(a);
+        } else if (ba) {
+            a.addNeighbor(b);
+        } else {
+            addLinkRandomOrientation(a, b);
+        }
+        return true;
     }
 }
 

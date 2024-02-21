@@ -9,6 +9,7 @@ public class ErdosRenyi extends RandomNetwork {
 
     @Override
     public void generateGraph(int[] rules) {
+        boolean success;
         int ruleIndex = random.nextInt(rules.length);
         AutomataCell currentNode = new AutomataCell(0, rules[ruleIndex], recordedHistoryLength);
         automataCells.add(currentNode);
@@ -18,10 +19,11 @@ public class ErdosRenyi extends RandomNetwork {
             ruleIndex = random.nextInt(rules.length);
             currentNode = new AutomataCell(i, rules[ruleIndex], recordedHistoryLength);
 
-            neighborNode = automataCells.get(random.nextInt(automataCells.size()));
-            automataCells.add(currentNode);
-
-            addLinkRandomOrientation(currentNode, neighborNode);
+            do {
+                neighborNode = automataCells.get(random.nextInt(automataCells.size()));
+                automataCells.add(currentNode);
+                success = addNeighbors(currentNode, neighborNode);
+            } while (!success);
         }
 
         for (int i = 0; i < numberOfInputNodes; i++) {
@@ -45,16 +47,8 @@ public class ErdosRenyi extends RandomNetwork {
             } while (firstIndex == secondIndex);
             a = automataCells.get(firstIndex);
             b = automataCells.get(secondIndex);
-            if (!(a.isNeighbor(b) || b.isNeighbor(a))) {
-                addLinkRandomOrientation(a, b);
-                k++;
-            } else if (a.isNeighbor(b)) {
-                b.addNeighbor(a);
-                k++;
-            } else if (b.isNeighbor(a)) {
-                a.addNeighbor(b);
-                k++;
-            }
+            success = addNeighbors(a, b);
+            if (success) k++;
         }
 
         for (AutomataCell node : automataCells) {

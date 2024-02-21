@@ -13,8 +13,8 @@ public class ExperimentRunner {
     }
 
     private double singleRun(int[] rules) {
-        classifier.setHyperParameters(10, 0.3, rules);
-        classifier.initializeNetwork("2N");
+        classifier.setHyperParameters(30, 0.3, rules);
+        classifier.initializeNetwork("BA");
         classifier.createData();
         classifier.trainNetwork();
         return classifier.testNetwork(true, false);
@@ -38,13 +38,13 @@ public class ExperimentRunner {
         }
     }
 
-    public void loadToFile(int rule, int iterations) {
-        double[] data = new double[iterations];
-        for (int i = 0; i < iterations; i++) {
-            data[i] = singleRun();
-            //if (i % 100 == 0) {
-            //    System.out.println("Iteration: " + i);
-            //}
+    public void writeToFile(int iterations) {
+        double[][] data = new double[256][iterations];
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < iterations; j++) {
+                data[i][j] = singleRun();
+            }
+            System.out.println("Data for Rule " + i + " collected");
         }
 
         // File to write the data
@@ -52,14 +52,22 @@ public class ExperimentRunner {
 
         // Use try-with-resources to ensure the FileWriter is closed properly
         try (FileWriter writer = new FileWriter(filename, true)) {
-            writer.write(rule + ",");
-            for (double d : data) {
-                writer.write(d + ","); // Write each number to the file, followed by a newline
+            for (int i = 0; i < 255; i++) {
+                writer.write(i + ",");
+                for (int j = 0; j < iterations - 1; j++) {
+                    writer.write(data[i][j] + ",");
+                }
+                writer.write(String.valueOf(data[i][iterations-1]));
+                writer.write("\n");
+                System.out.println("Data for Rule " + i + " written to file");
             }
-            writer.write("\n");
-            System.out.println("Rule: " + rule + " written to file");
+            writer.write(255 + ",");
+            for (int j = 0; j < iterations - 1; j++) {
+                writer.write(data[255][j] + ",");
+            }
+            writer.write(String.valueOf(data[255][iterations-1]));
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred when writing to file.");
             e.printStackTrace();
         }
     }

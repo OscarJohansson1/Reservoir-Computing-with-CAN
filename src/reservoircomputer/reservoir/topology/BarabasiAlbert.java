@@ -9,6 +9,7 @@ public class BarabasiAlbert extends RandomNetwork {
 
     @Override
     public void generateGraph(int[] rules) {
+        boolean success;
         int n = numberOfNodes;
         int n0;
         int m;
@@ -34,20 +35,11 @@ public class BarabasiAlbert extends RandomNetwork {
             int ruleIndex = random.nextInt(rules.length);
             currentNode = new AutomataCell(n0 + i, rules[ruleIndex], recordedHistoryLength);
             for (int j = 0; j < m; j++) {
-                while (true) {
+                do {
                     firstIndex = random.nextInt(n0 + i);
                     neighborNode = automataCells.get(firstIndex);
-                    if (!(currentNode.isNeighbor(neighborNode) || neighborNode.isNeighbor(currentNode))) {
-                        addLinkRandomOrientation(currentNode, neighborNode);
-                        break;
-                    } else if (currentNode.isNeighbor(neighborNode)) {
-                        neighborNode.addNeighbor(currentNode);
-                        break;
-                    } else if (neighborNode.isNeighbor(currentNode)) {
-                        currentNode.addNeighbor(neighborNode);
-                        break;
-                    }
-                }
+                    success = addNeighbors(currentNode, neighborNode);
+                } while (!success);
             }
             automataCells.add(currentNode);
         }

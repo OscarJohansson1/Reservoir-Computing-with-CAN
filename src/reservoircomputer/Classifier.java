@@ -114,7 +114,7 @@ public class Classifier {
     }
 
     public double testNetwork(boolean verbose, boolean plot) {
-        double accuracyThresholdVerbose = 0.9;
+        double accuracyThresholdVerbose = 0.6;
         double sum = 0;
         double[][] weights;
         int prediction;
