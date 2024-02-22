@@ -66,6 +66,9 @@ public class Classifier {
             case "2N":
                 network = new TwoNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
                 break;
+            case "CC":
+                network = new CustomNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
+                break;
             default:
                 throw new IllegalArgumentException("Network name '" + networkName + "' does not exist.");
         }
@@ -74,6 +77,7 @@ public class Classifier {
 
     public void createData() {
         double distribution = 0.5;
+        int flip = 1; //TODO decide on changing distribution or 50/50
         trainData = new int[trainSize][nAutomataCells * recordedHistoryLength];
         trainLabels = new int[trainSize];
         testData = new int[testSize][nAutomataCells * recordedHistoryLength];;
@@ -91,10 +95,11 @@ public class Classifier {
                 trainLabels[i] = 1;
             }
             network.randomizeStateOfGraph();
+
         }
 
         for (int i = 0; i < testSize; i++) {
-            if (Math.random() < distribution) {
+            if (flip < distribution) {
                 network.updateNodesTTimes(generator.generateRandomData(inputDataLength));
                 testData[i] = network.getHistory();
                 testLabels[i] = 0;
@@ -105,6 +110,7 @@ public class Classifier {
                 testLabels[i] = 1;
             }
             network.randomizeStateOfGraph();
+            flip = -flip;
         }
     }
 
@@ -114,7 +120,7 @@ public class Classifier {
     }
 
     public double testNetwork(boolean verbose, boolean plot) {
-        double accuracyThresholdVerbose = 0.6;
+        double accuracyThresholdVerbose = 0.7;
         double sum = 0;
         double[][] weights;
         int prediction;

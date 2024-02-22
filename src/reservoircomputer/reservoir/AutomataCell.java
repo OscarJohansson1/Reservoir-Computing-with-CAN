@@ -24,11 +24,6 @@ public class AutomataCell implements Cell {
         this.historyLength = historyLength;
     }
 
-    public AutomataCell(int identity, int rule) {
-        // Call the other constructor with a default historyLength value
-        this(identity, rule, 10);
-    }
-
     public void addNeighbor(Cell neighbor) {
         // Has left / right neighbour
         neighbors.add(neighbor);
@@ -112,12 +107,25 @@ public class AutomataCell implements Cell {
             nextState = neighbors.get(0).getCurrentState();
         } else {
             double sum = 0;
+
+            // No symmetry
             for (int i = 0; i < len - 1; i++) {
                 for (int j = i + 1; j < len; j++) {
                     sum += applySingleRule(neighbors.get(i).getCurrentState(), neighbors.get(j).getCurrentState());
                     count++;
                 }
             }
+            /*
+            // Symmetry
+            for (int i = 0; i < len; i++) {
+                for (int j = 0; j < len; j++) {
+                    if (i != j) {
+                        sum += applySingleRule(neighbors.get(i).getCurrentState(), neighbors.get(j).getCurrentState());
+                        count++;
+                    }
+                }
+            }*/
+
 
             if (sum / count < 0.5) {
                 nextState = 0;

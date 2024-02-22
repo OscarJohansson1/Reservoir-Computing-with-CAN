@@ -55,12 +55,7 @@ public class InputGenerator {
     }
 
     private char getRandomChar() {
-        int randomIndex;
-        if (wildcards) {
-            randomIndex = random.nextInt(dataLength);
-        } else {
-            randomIndex = random.nextInt(vocabulary.length());
-        }
+        int randomIndex = random.nextInt(vocabulary.length());
         return vocabulary.charAt(randomIndex);
     }
 

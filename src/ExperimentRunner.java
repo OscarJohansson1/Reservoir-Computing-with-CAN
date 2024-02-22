@@ -9,19 +9,37 @@ public class ExperimentRunner {
 
     public ExperimentRunner() {
         this.classifier = new Classifier("ab", false, 20, 0.01,
-                1000, 400, 100, 200);
+                1000, 400, 100, 100);
     }
 
-    private double singleRun(int[] rules) {
-        classifier.setHyperParameters(30, 0.3, rules);
-        classifier.initializeNetwork("BA");
+    private double singleRun(int nAutomataCells, double networkDensity, int[] rules, String networkName) {
+        classifier.setHyperParameters(nAutomataCells, networkDensity, rules);
+        classifier.initializeNetwork(networkName);
         classifier.createData();
         classifier.trainNetwork();
-        return classifier.testNetwork(true, false);
+        return classifier.testNetwork(false, false);
     }
 
     private double singleRun() {
-        return singleRun(getAllRules());
+        return singleRun(10, 0.3, getAllRules(), "ER");
+    }
+
+    public void testAllRulesOnCustomNetwork() {
+        for (int i = 0; i < 256; i++) {
+            double sum = 0;
+            double extraSum = 0;
+            int extraCount = 0;
+            double current;
+            for (int n = 0; n < 20; n++) {
+                current = singleRun(10, 0.3, new int[]{i}, "CC");
+                if (current > 0.6) {
+                    extraSum += current;
+                    extraCount++;
+                }
+                sum += current;
+            }
+            System.out.println("Rule: " + i + " Average: " + String.format("%.2f", sum / 20.0) + " Extra*: " + String.format("%.2f", extraSum) + " / " + extraCount + " = " + String.format("%.2f", extraSum / extraCount));
+        }
     }
 
     public void findMax() {
@@ -39,42 +57,47 @@ public class ExperimentRunner {
     }
 
     public void writeToFile(int iterations) {
-        double[][] data = new double[256][iterations];
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < iterations; j++) {
-                data[i][j] = singleRun();
-            }
-            System.out.println("Data for Rule " + i + " collected");
-        }
-
         // File to write the data
         String filename = "numbers.txt";
 
-        // Use try-with-resources to ensure the FileWriter is closed properly
-        try (FileWriter writer = new FileWriter(filename, true)) {
-            for (int i = 0; i < 255; i++) {
+        for (int i = 0; i < 256; i++) {
+            // Use try-with-resources to ensure the FileWriter is closed properly
+            try (FileWriter writer = new FileWriter(filename, true)) {
+
                 writer.write(i + ",");
-                for (int j = 0; j < iterations - 1; j++) {
-                    writer.write(data[i][j] + ",");
+                for (int j = 0; j < iterations; j++) {
+                    if (j == iterations - 1) {
+                        writer.write(String.valueOf(singleRun(10, 0.3, new int[]{i}, "BA")));
+                    } else {
+                        writer.write(singleRun(10, 0.3, new int[]{i}, "BA") + ",");
+                    }
                 }
-                writer.write(String.valueOf(data[i][iterations-1]));
                 writer.write("\n");
                 System.out.println("Data for Rule " + i + " written to file");
+            } catch (IOException e) {
+                System.out.println("An error occurred when writing to file.");
+                e.printStackTrace();
             }
-            writer.write(255 + ",");
-            for (int j = 0; j < iterations - 1; j++) {
-                writer.write(data[255][j] + ",");
-            }
-            writer.write(String.valueOf(data[255][iterations-1]));
-        } catch (IOException e) {
-            System.out.println("An error occurred when writing to file.");
-            e.printStackTrace();
         }
+    }
+
+    public void averageOverXRuns(int examples) {
+        double sum = 0;
+        double max = 0;
+        double current;
+        for (int i = 0; i < examples; i++) {
+            current = singleRun();
+            if (current > max) {
+                max = current;
+            }
+            sum += current;
+        }
+        System.out.println("Average: " + sum / examples + " Max: " + max);
     }
 
     public void someExamples(int examples) {
         for (int i = 0; i < examples; i++) {
-            System.out.println(singleRun());
+            System.out.println(singleRun(10, 0.3, new int[]{i}, "ER"));
         }
     }
 
