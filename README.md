@@ -41,6 +41,20 @@ Classes that manage the cells behavior and update rules. The driven cell is upda
 #### Package: topology
 A package with the abstract class RandomNetwork, which is a general implementation of a random cellular automata network, then the remaining classes in the package are concrete implementations based on different network topologies. As of now, there is support for topologies inspired by Erdos Renyi, scale-free networks, small-world network, and a custom network where each cell has exactly two neighbours.
 
+## Packages
+
+### src
+
+Includes all the source code for the system
+
+### data
+
+Includes all the data from experiments
+
+### analysis
+
+Includes all the code for data analysis
+
 ## Installation
 No installation needed. Only standard Java libraries are used.
 
