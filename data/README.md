@@ -2,7 +2,7 @@
 
 Topology: Barabasi Albert
 
-Automata cells: 10
+Automata cells: 20
 
 Density: 0.3
 
