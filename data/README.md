@@ -1,12 +1,12 @@
-### rulesBAhardershort
+### rulesBAhardershort / rulesWSharderlong
 
-Topology: Barabasi Albert
+Topology: Barabasi Albert / Watts Strogatz
 
 Automata cells: 20
 
 Density: 0.3
 
-Rules: 15, 85, 117, 245
+Rules: 15, 85, 117, 245 / all rules
 
 Data points: 100 / rule
 
