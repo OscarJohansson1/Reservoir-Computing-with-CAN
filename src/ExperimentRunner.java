@@ -3,6 +3,7 @@ import reservoircomputer.Classifier;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class ExperimentRunner {
     private final Classifier classifier;
@@ -57,19 +58,23 @@ public class ExperimentRunner {
     }
 
     public void writeToFile(int iterations) {
+        //List<Integer> rules = Arrays.asList(15, 85, 117, 245);
         // File to write the data
         String filename = "numbers.txt";
 
         for (int i = 0; i < 256; i++) {
+            //if (!rules.contains(i)) {
+            //    continue;
+            //}
             // Use try-with-resources to ensure the FileWriter is closed properly
             try (FileWriter writer = new FileWriter(filename, true)) {
 
                 writer.write(i + ",");
                 for (int j = 0; j < iterations; j++) {
                     if (j == iterations - 1) {
-                        writer.write(String.valueOf(singleRun(10, 0.3, new int[]{i}, "BA")));
+                        writer.write(String.valueOf(singleRun(20, 0.3, new int[]{i}, "WS")));
                     } else {
-                        writer.write(singleRun(10, 0.3, new int[]{i}, "BA") + ",");
+                        writer.write(singleRun(20, 0.3, new int[]{i}, "WS") + ",");
                     }
                 }
                 writer.write("\n");
