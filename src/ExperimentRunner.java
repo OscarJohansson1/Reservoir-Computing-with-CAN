@@ -10,8 +10,43 @@ public class ExperimentRunner {
 
     public ExperimentRunner() {
         this.classifier = new Classifier("ab", false, 20, 0.01,
-                1000, 400, 100, 100);
+                1000, 400, 100, 1000);
     }
+
+    public void timeExperiment() {
+        int iterations = 10;
+        long startTime = System.nanoTime();
+
+        long ERTime1 = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            singleRun(10, 0.3, getAllRules(), "ER");
+        }
+        long ERTime2 = System.nanoTime();
+
+        System.out.println("Average time (ER): " + (ERTime2 - ERTime1) / iterations / 1000000 + " milliseconds");
+
+        long BATime1 = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            singleRun(10, 0.3, getAllRules(), "BA");
+        }
+        long BATime2 = System.nanoTime();
+
+        System.out.println("Average time (BA): " + (BATime2 - BATime1) / iterations / 1000000 + " milliseconds");
+
+        long WSTime1 = System.nanoTime();
+        for (int i = 0; i < iterations; i++) {
+            singleRun(10, 0.3, getAllRules(), "WS");
+        }
+        long WSTime2 = System.nanoTime();
+
+        System.out.println("Average time (WS): " + (WSTime2 - WSTime1) / iterations / 1000000 + " milliseconds");
+
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+
+        System.out.println("Elapsed time (total): " + elapsedTime / 1000000 + " milliseconds");
+    }
+
 
     private double singleRun(int nAutomataCells, double networkDensity, int[] rules, String networkName) {
         classifier.setHyperParameters(nAutomataCells, networkDensity, rules);
@@ -100,9 +135,9 @@ public class ExperimentRunner {
         System.out.println("Average: " + sum / examples + " Max: " + max);
     }
 
-    public void someExamples(int examples) {
+    public void someExamples(int examples, int rule) {
         for (int i = 0; i < examples; i++) {
-            System.out.println(singleRun(10, 0.3, new int[]{i}, "ER"));
+            System.out.println(singleRun(50, 0.2, getAllRules(), "ER"));
         }
     }
 

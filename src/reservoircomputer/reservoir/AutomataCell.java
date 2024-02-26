@@ -100,19 +100,23 @@ public class AutomataCell implements Cell {
 
     public void applyRule() {
         int len = neighbors.size();
-        int count = 0;
+        int zeros = 0;
+        int ones = 0;
+        int value;
         if (len == 0) {
             nextState = currentState;
         } else if (len == 1) {
             nextState = neighbors.get(0).getCurrentState();
         } else {
-            double sum = 0;
-
             // No symmetry
             for (int i = 0; i < len - 1; i++) {
                 for (int j = i + 1; j < len; j++) {
-                    sum += applySingleRule(neighbors.get(i).getCurrentState(), neighbors.get(j).getCurrentState());
-                    count++;
+                    value = applySingleRule(neighbors.get(i).getCurrentState(), neighbors.get(j).getCurrentState());
+                    if (value ==  0) {
+                        zeros++;
+                    } else {
+                        ones++;
+                    }
                 }
             }
             /*
@@ -125,9 +129,7 @@ public class AutomataCell implements Cell {
                     }
                 }
             }*/
-
-
-            if (sum / count < 0.5) {
+            if (zeros > ones) {
                 nextState = 0;
             } else {
                 nextState = 1;
