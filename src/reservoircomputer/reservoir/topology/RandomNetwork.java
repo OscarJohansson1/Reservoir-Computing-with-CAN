@@ -27,6 +27,12 @@ public abstract class RandomNetwork {
 
     public abstract void generateGraph(int[] rules);
 
+    public void changeRuleOnNetwork(int rule) {
+        for (AutomataCell cell : automataCells) {
+            cell.changeRule(rule);
+        }
+    }
+
     public void updateNodes(int[] inputState) {
         if (inputState.length != numberOfInputNodes) {
             throw new IllegalStateException("Wrong dimension on next input state");
@@ -74,6 +80,12 @@ public abstract class RandomNetwork {
             System.out.println("Identity: " + node.getIdentity() + ", Neighbor: " + node.getNeighborIdentities() +
                     ", Rule: " + node.getRule() +
                     ", Weight: " + String.format("%.4f", weights[0][i]) + " (" + String.format("%.4f", weights[1][i++]) + ")");
+        }
+    }
+
+    public void printGraphInfo() {
+        for (AutomataCell node : automataCells) {
+            System.out.println("Identity: " + node.getIdentity() + ", Neighbor: " + node.getNeighborIdentities());
         }
     }
 

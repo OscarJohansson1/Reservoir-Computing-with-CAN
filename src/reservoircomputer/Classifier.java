@@ -52,7 +52,7 @@ public class Classifier {
         this.rules = rules;
     }
 
-    public void initializeNetwork(String networkName) {
+    public void initializeNetwork(String networkName, boolean verbose) {
         switch (networkName) {
             case "ER":
                 network = new ErdosRenyi(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
@@ -73,6 +73,11 @@ public class Classifier {
                 throw new IllegalArgumentException("Network name '" + networkName + "' does not exist.");
         }
         network.generateGraph(rules);
+        if (verbose) network.printGraphInfo();
+    }
+
+    public void changeNetworkRule(int rule) {
+        network.changeRuleOnNetwork(rule);
     }
 
     public void createData() {
@@ -85,12 +90,11 @@ public class Classifier {
 
         for (int i = 0; i < trainSize; i++) {
             if (Math.random() < distribution) {
-                network.updateNodesTTimes(generator.generateRandomData(inputDataLength));
+                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.5));
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generatePeriodicRangeData(inputDataLength,
-                        'a', 5, 10));
+                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 1;
             }
@@ -100,12 +104,11 @@ public class Classifier {
 
         for (int i = 0; i < testSize; i++) {
             if (flip < distribution) {
-                network.updateNodesTTimes(generator.generateRandomData(inputDataLength));
+                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.5));
                 testData[i] = network.getHistory();
                 testLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generatePeriodicRangeData(inputDataLength,
-                        'a', 5, 10));
+                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
                 testData[i] = network.getHistory();
                 testLabels[i] = 1;
             }

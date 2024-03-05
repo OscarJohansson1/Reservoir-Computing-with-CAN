@@ -50,11 +50,53 @@ public class ExperimentRunner {
 
     private double singleRun(int nAutomataCells, double networkDensity, int[] rules, String networkName) {
         classifier.setHyperParameters(nAutomataCells, networkDensity, rules);
-        classifier.initializeNetwork(networkName);
+        classifier.initializeNetwork(networkName, false);
         classifier.createData();
         classifier.trainNetwork();
         return classifier.testNetwork(false, false);
     }
+
+    private void initializeRun(int nAutomataCells, double networkDensity, String networkName) {
+        classifier.setHyperParameters(nAutomataCells, networkDensity, getAllRules());
+        classifier.initializeNetwork(networkName, true);
+    }
+
+    private void setRunRule(int rule) {
+        classifier.changeNetworkRule(rule);
+        classifier.createData();
+    }
+
+    private double run() {
+        classifier.trainNetwork();
+        return classifier.testNetwork(false, false);
+    }
+
+    public void rulesXNetwork() {
+        // File to write the data
+        String filename = "RNXBA.txt";
+        double accuracy;
+        for (int i = 0; i < 100; i++) {
+            try (FileWriter writer = new FileWriter(filename, true)) {
+                writer.write(i + ",");
+                initializeRun(20, 0.2, "BA");
+                for (int j = 0; j < 256; j++) {
+                    setRunRule(j);
+                    accuracy = run();
+                    if (j == 255) {
+                        writer.write(String.valueOf(accuracy));
+                    } else {
+                        writer.write(accuracy + ",");
+                    }
+                }
+                writer.write("\n");
+                System.out.println("Data for graph #" + i + " written to file");
+            } catch (IOException e) {
+                System.out.println("An error occurred when writing to file.");
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private double singleRun() {
         return singleRun(10, 0.3, getAllRules(), "ER");
@@ -92,33 +134,47 @@ public class ExperimentRunner {
         }
     }
 
-    public void writeToFile(int iterations) {
-        //List<Integer> rules = Arrays.asList(15, 85, 117, 245);
+    public void writeToFile() {
+        List<Integer> rules = Arrays.asList(15, 85, 117, 245);
         // File to write the data
-        String filename = "numbers.txt";
+        String filename = "distribution.txt";
+        double distribution;
+        double current;
+        double max = 0;
+        String[] topologies = new String[]{"BA", "ER", "WS", "2N"};
 
-        for (int i = 0; i < 256; i++) {
+        for (String type : topologies) {
             //if (!rules.contains(i)) {
             //    continue;
             //}
             // Use try-with-resources to ensure the FileWriter is closed properly
-            try (FileWriter writer = new FileWriter(filename, true)) {
 
-                writer.write(i + ",");
-                for (int j = 0; j < iterations; j++) {
-                    if (j == iterations - 1) {
-                        writer.write(String.valueOf(singleRun(20, 0.3, new int[]{i}, "WS")));
-                    } else {
-                        writer.write(singleRun(20, 0.3, new int[]{i}, "WS") + ",");
+            try (FileWriter writer = new FileWriter(filename, true)) {
+                writer.write(type + ",");
+                for (int j = 0; j < 100; j++) {
+                    distribution = (double) j / 100;
+                    for (int k = 0; k < 4; k++) {
+                        current = singleRun(20, 0.2, new int[]{rules.get(k)}, type);
+                        if (current > max) {
+                            max = current;
+                        }
                     }
+                    if (j == 100 - 1) {
+                        writer.write(String.valueOf(max));
+                    } else {
+                        writer.write(max + ",");
+                    }
+                    max = 0;
                 }
                 writer.write("\n");
-                System.out.println("Data for Rule " + i + " written to file");
+                System.out.println("Data for Type: " + type + " written to file");
             } catch (IOException e) {
                 System.out.println("An error occurred when writing to file.");
                 e.printStackTrace();
             }
+
         }
+
     }
 
     public void averageOverXRuns(int examples) {

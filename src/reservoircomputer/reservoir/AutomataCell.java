@@ -6,7 +6,7 @@ public class AutomataCell implements Cell {
     private final int identity;
     private int currentState;
     private int nextState;
-    private final String binaryRule;
+    private String binaryRule;
     private List<Cell> neighbors;
     private final Queue<Integer> history;
     private final int historyLength;
@@ -17,11 +17,19 @@ public class AutomataCell implements Cell {
         this.identity = identity;
         this.currentState = Math.random() < 0.5 ? 0 : 1;
         this.nextState = -1;
-        String binaryString = Integer.toBinaryString(rule);
-        this.binaryRule = String.format("%8s", binaryString).replace(' ', '0');
+        this.binaryRule = ruleToBinary(rule);
         this.neighbors = new ArrayList<>();
         this.history = new LinkedList<>();
         this.historyLength = historyLength;
+    }
+
+    private String ruleToBinary(int rule) {
+        String binaryString = Integer.toBinaryString(rule);
+        return String.format("%8s", binaryString).replace(' ', '0');
+    }
+
+    public void changeRule(int rule) {
+        binaryRule = ruleToBinary(rule);
     }
 
     public void addNeighbor(Cell neighbor) {

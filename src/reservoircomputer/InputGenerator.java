@@ -17,6 +17,20 @@ public class InputGenerator {
         if (wildcards) this.dataLength++;
     }
 
+    public int[][] generateRandomlyDistributedData(int nDataPoints, double distribution) {
+        int[][] data = new int[nDataPoints][dataLength];
+        char sampledChar;
+        for (int i = 0; i < nDataPoints; i++) {
+            if (Math.random() < distribution) {
+                sampledChar = 'a';
+            } else {
+                sampledChar = 'b';
+            }
+            data[i] = encoder.oneHotEncode(sampledChar);
+        }
+        return data;
+    }
+
     public int[][] generateRandomData(int nDataPoints) {
         int[][] data = new int[nDataPoints][dataLength];
 
