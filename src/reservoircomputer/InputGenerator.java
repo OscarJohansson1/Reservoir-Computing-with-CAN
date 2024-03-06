@@ -31,6 +31,26 @@ public class InputGenerator {
         return data;
     }
 
+    public int[][] generateAlternatingData(int nDataPoints) {
+        int[][] data = new int[nDataPoints][dataLength];
+        char sampledChar;
+        if (Math.random() < 0.5) {
+            sampledChar = 'a';
+        } else {
+            sampledChar = 'b';
+        }
+        data[0] = encoder.oneHotEncode(sampledChar);
+        for (int i = 1; i < nDataPoints; i++) {
+            if (sampledChar == 'a') {
+                sampledChar = 'b';
+            } else {
+                sampledChar = 'a';
+            }
+            data[i] = encoder.oneHotEncode(sampledChar);
+        }
+        return data;
+    }
+
     public int[][] generateRandomData(int nDataPoints) {
         int[][] data = new int[nDataPoints][dataLength];
 

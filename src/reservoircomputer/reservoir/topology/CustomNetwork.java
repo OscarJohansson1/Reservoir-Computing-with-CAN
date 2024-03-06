@@ -11,7 +11,7 @@ public class CustomNetwork extends RandomNetwork {
     public void generateGraph(int[] rules) {
         int rule = rules[0];
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             automataCells.add(new AutomataCell(i, rule, recordedHistoryLength));
         }
 
@@ -19,6 +19,13 @@ public class CustomNetwork extends RandomNetwork {
             drivenCells[i] = new DrivenCell(numberOfNodes + i + 100);
         }
 
+        AutomataCell current = automataCells.get(0);
+        current.addNeighbor(drivenCells[0]);
+
+        current = automataCells.get(1);
+        current.addNeighbor(drivenCells[1]);
+
+        /*
         AutomataCell current = automataCells.get(0);
         current.addNeighbor(automataCells.get(7));
         current.addNeighbor(automataCells.get(1));
@@ -66,7 +73,7 @@ public class CustomNetwork extends RandomNetwork {
         current.addNeighbor(automataCells.get(3));
         current.addNeighbor(automataCells.get(7));
         current.addNeighbor(automataCells.get(8));
-        current.addNeighbor(automataCells.get(6));
+        current.addNeighbor(automataCells.get(6));*/
     }
 }
 
