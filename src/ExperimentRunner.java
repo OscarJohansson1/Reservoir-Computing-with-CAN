@@ -73,7 +73,7 @@ public class ExperimentRunner {
 
     public void rulesXNetwork() {
         // File to write the data
-        String filename = "RNX2Nsd2.txt";
+        String filename = "RNX2N.txt";
         double accuracy;
         for (int i = 0; i < 100; i++) {
             try (FileWriter writer = new FileWriter(filename, true)) {
