@@ -51,6 +51,39 @@ public class InputGenerator {
         return data;
     }
 
+    public int[][] generateAlternatingDataWithNoise(int nDataPoints) {
+        double noiseLevel = 0.1;
+        int[][] data = new int[nDataPoints][dataLength];
+        int state;
+        char sampledChar;
+        if (Math.random() < 0.5) {
+            state = 1;
+            sampledChar = 'a';
+        } else {
+            state = -1;
+            sampledChar = 'b';
+        }
+        data[0] = encoder.oneHotEncode(sampledChar);
+        for (int i = 1; i < nDataPoints; i++) {
+            if (state == 1) {
+                if (Math.random() > noiseLevel) {
+                    sampledChar = 'b';
+                } else {
+                    sampledChar = 'a';
+                }
+            } else {
+                if (Math.random() > noiseLevel) {
+                    sampledChar = 'a';
+                } else {
+                    sampledChar = 'b';
+                }
+            }
+            data[i] = encoder.oneHotEncode(sampledChar);
+            state = -state;
+        }
+        return data;
+    }
+
     public int[][] generateRandomData(int nDataPoints) {
         int[][] data = new int[nDataPoints][dataLength];
 

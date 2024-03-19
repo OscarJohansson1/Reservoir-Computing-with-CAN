@@ -97,7 +97,7 @@ public class Classifier {
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 1;
             }
@@ -111,7 +111,7 @@ public class Classifier {
                 testData[i] = network.getHistory();
                 testLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
                 testData[i] = network.getHistory();
                 testLabels[i] = 1;
             }
