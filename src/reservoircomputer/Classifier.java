@@ -69,6 +69,9 @@ public class Classifier {
             case "3N":
                 network = new ThreeNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
                 break;
+            case "4N":
+                network = new FourNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
+                break;
             case "CC":
                 network = new CustomNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
                 break;

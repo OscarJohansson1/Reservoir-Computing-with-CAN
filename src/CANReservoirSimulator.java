@@ -6,7 +6,7 @@ public class CANReservoirSimulator {
         //experiment.writeToFile();
         //experiment.timeExperiment();
         //experiment.testAllRulesOnCustomNetwork();
-        //experiment.someExamples(100, 91);
+        //experiment.someExamples(100, 29);
         //experiment.averageOverXRuns(100);
 
     }
