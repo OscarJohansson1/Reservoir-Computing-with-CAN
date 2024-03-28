@@ -1,10 +1,10 @@
 # Master's Thesis Project: Reservoir Computing with Cellular Automata Networks
 Author:
-Oscar Johansson, Chalmers University of Technology, Sweden
+Oscar Johansson, IT/MPDSC, Chalmers University of Technology, Sweden
 
 Email: johaosc@chalmers.se
 
-Supervisor: Zoran Konkoli, MC2, Chalmers University of Technology
+Supervisor: Zoran Konkoli, MC2, Chalmers University of Technology, Sweden
 
 Last updated: 2024-03-28
 
