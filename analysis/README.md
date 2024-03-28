@@ -1,3 +1,11 @@
-### Data Analysis
+# Data Analysis
 
-The data analysis was done in Python. The corresponding notebook can be found here and it can be run in for example Colab. The files named rules___ can be run directly using the notebook, just change the file name in the inital part of the notebook.
+The data analysis was done in Python, using notebooks.
+
+## Master's Thesis Main
+
+An organized notebook with the code that was used to produce the figures and tables found in the thesis.
+
+## Master's Thesis Sandbox
+
+All code, randomly, in no particular order, might not even be relevant.
