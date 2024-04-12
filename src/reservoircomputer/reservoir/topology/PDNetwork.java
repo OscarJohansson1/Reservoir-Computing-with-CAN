@@ -6,13 +6,18 @@ import reservoircomputer.reservoir.DrivenCell;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FourNeighbours extends RandomNetwork {
-    public FourNeighbours(int numberOfNodes, int numberOfInputNodes, int historyLength, double density) {
+public class PDNetwork extends RandomNetwork {
+    private final int predecessors;
+    public PDNetwork(int numberOfNodes, int numberOfInputNodes, int historyLength, double density, int predecessors) {
         super(numberOfNodes, numberOfInputNodes, historyLength, density);
+        this.predecessors = predecessors;
     }
 
     @Override
     public void generateGraph(int[] rules) {
+        int ruleIndex = random.nextInt(rules.length);
+        int rule = rules[ruleIndex];
+
         Set<Integer> numbers = new HashSet<>();
         AutomataCell current;
 
@@ -21,15 +26,15 @@ public class FourNeighbours extends RandomNetwork {
         }
 
         for (int i = 0; i < numberOfNodes; i++) {
-            int ruleIndex = random.nextInt(rules.length);
-            automataCells.add(new AutomataCell(i, rules[ruleIndex], recordedHistoryLength));
+            automataCells.add(new AutomataCell(i, rule, recordedHistoryLength));
         }
 
         for (int i = 0; i < numberOfNodes; i++) {
             current = automataCells.get(i);
             numbers.clear();
-            while (numbers.size() < 4) {
+            while (numbers.size() < predecessors) {
                 int nextNumber = random.nextInt(numberOfNodes);
+                if (nextNumber == i) continue;
                 if (!numbers.contains(nextNumber)) {
                     current.addNeighbor(automataCells.get(nextNumber));
                     numbers.add(nextNumber);
@@ -49,8 +54,8 @@ public class FourNeighbours extends RandomNetwork {
         }
 
         for (AutomataCell automataCell : automataCells) {
-            if (automataCell.getNeighborhoodSize() != 4) {
-                throw new IllegalStateException("A node in the graph does not have four neighbors");
+            if (automataCell.getNeighborhoodSize() != predecessors) {
+                throw new IllegalStateException("A node in the graph does not have the right amount of neighbors: " + automataCell.getNeighborhoodSize());
             }
         }
     }

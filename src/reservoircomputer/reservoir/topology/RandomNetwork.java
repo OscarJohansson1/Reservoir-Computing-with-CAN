@@ -59,6 +59,29 @@ public abstract class RandomNetwork {
         }
     }
 
+    public void mutateNetwork(int mutations) {
+        int mutationCount = 0;
+        AutomataCell current;
+        AutomataCell neighbour;
+        while (mutationCount < mutations) {
+            while (true) {
+                int currentIndex = random.nextInt(numberOfNodes);
+                current = automataCells.get(currentIndex);
+
+                int nextNumber = random.nextInt(numberOfNodes);
+                if (nextNumber == currentIndex) continue;
+
+                neighbour = automataCells.get(nextNumber);
+                if (current.isNeighbor(neighbour)) continue;
+
+                current.removeRandomNeighbor();
+                current.addNeighbor(neighbour);
+                break;
+            }
+            mutationCount++;
+        }
+    }
+
     public int[] getHistory() {
         int[] history = new int[recordedHistoryLength * numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
@@ -85,7 +108,7 @@ public abstract class RandomNetwork {
 
     public void printGraphInfo() {
         for (AutomataCell node : automataCells) {
-            System.out.println("Identity: " + node.getIdentity() + ", Neighbor: " + node.getNeighborIdentities());
+            System.out.println("Identity: " + node.getIdentity() + ", Neighbor: " + node.getNeighborIdentities()); // + ", Rule: " + node.getRule());
         }
     }
 

@@ -51,7 +51,7 @@ public class ExperimentRunner {
     private double singleRun(int nAutomataCells, double networkDensity, int[] rules, String networkName) {
         classifier.setHyperParameters(nAutomataCells, networkDensity, rules);
         classifier.initializeNetwork(networkName, false);
-        classifier.createData();
+        classifier.createData('b');
         classifier.trainNetwork();
         return classifier.testNetwork(false, false);
     }
@@ -61,9 +61,15 @@ public class ExperimentRunner {
         classifier.initializeNetwork(networkName, true);
     }
 
+    private void initializePDRun(int nAutomataCells, double networkDensity, int predecessors, int rule) {
+        classifier.setHyperParameters(nAutomataCells, networkDensity, new int[]{rule});
+        classifier.initializePDNetwork(predecessors, true);
+        classifier.createData('a');
+    }
+
     private void setRunRule(int rule) {
         classifier.changeNetworkRule(rule);
-        classifier.createData();
+        classifier.createData('b');
     }
 
     private double run() {
@@ -73,16 +79,41 @@ public class ExperimentRunner {
 
     public void rulesXNetwork() {
         // File to write the data
-        String filename = "PD4D.txt";
+        String filename = "PD2BB.txt";
         double accuracy;
         for (int i = 0; i < 100; i++) {
             try (FileWriter writer = new FileWriter(filename, true)) {
                 writer.write(i + ",");
-                initializeRun(20, 0.2, "4N");
+                initializeRun(20, 0.2, "2N");
                 for (int j = 0; j < 256; j++) {
                     setRunRule(j);
                     accuracy = run();
                     if (j == 255) {
+                        writer.write(String.valueOf(accuracy));
+                    } else {
+                        writer.write(accuracy + ",");
+                    }
+                }
+                writer.write("\n");
+                System.out.println("Data for graph #" + i + " written to file");
+            } catch (IOException e) {
+                System.out.println("An error occurred when writing to file.");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void rule91onPD() {
+        // File to write the data
+        String filename = "PDX91.txt";
+        double accuracy;
+        for (int i = 2; i < 20; i++) {
+            try (FileWriter writer = new FileWriter(filename, true)) {
+                writer.write(i + ",");
+                for (int j = 0; j < 10; j++) {
+                    initializePDRun(20, 0.2, i, 123);
+                    accuracy = run();
+                    if (j == 9) {
                         writer.write(String.valueOf(accuracy));
                     } else {
                         writer.write(accuracy + ",");
@@ -193,7 +224,7 @@ public class ExperimentRunner {
 
     public void someExamples(int examples, int rule) {
         for (int i = 0; i < examples; i++) {
-            System.out.println(singleRun(20, 0.2, getAllRules(), "4N"));
+            System.out.println(singleRun(20, 0.2, new int[]{91}, "4N"));
         }
     }
 

@@ -3,8 +3,6 @@ package reservoircomputer;
 import reservoircomputer.reservoir.topology.*;
 import visualization.GridPlotter;
 
-import java.util.Arrays;
-
 public class Classifier {
     //
     // Reservoir Computing components
@@ -64,13 +62,13 @@ public class Classifier {
                 network = new WattsStrogatz(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
                 break;
             case "2N":
-                network = new TwoNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
+                network = new PDNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity, 2);
                 break;
             case "3N":
-                network = new ThreeNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
+                network = new PDNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity, 3);
                 break;
             case "4N":
-                network = new FourNeighbours(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
+                network = new PDNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity, 4);
                 break;
             case "CC":
                 network = new CustomNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity);
@@ -82,11 +80,17 @@ public class Classifier {
         if (verbose) network.printGraphInfo();
     }
 
+    public void initializePDNetwork(int predecessors, boolean verbose) {
+        network = new PDNetwork(nAutomataCells, nDrivenCells, recordedHistoryLength, networkDensity, predecessors);
+        network.generateGraph(rules);
+        if (verbose) network.printGraphInfo();
+    }
+
     public void changeNetworkRule(int rule) {
         network.changeRuleOnNetwork(rule);
     }
 
-    public void createData() {
+    public void createData(char type) {
         double distribution = 0.5;
         int flip = 1; //TODO decide on changing distribution or 50/50
         trainData = new int[trainSize][nAutomataCells * recordedHistoryLength];
@@ -100,7 +104,23 @@ public class Classifier {
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                if (type == 'a') {
+                    if (Math.random() < 0.334) {
+                        network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                    } else if (Math.random() < 0.5) {
+                        network.updateNodesTTimes(generator.generateAlternatingData(inputDataLength));
+                    } else {
+                        network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                    }
+                } else if (type == 'b') {
+                    network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                } else if (type == 'c') {
+                    network.updateNodesTTimes(generator.generateAlternatingData(inputDataLength));
+                } else if (type == 'd') {
+                    network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                } else {
+                    throw new IllegalStateException("Unknown input type: " + type);
+                }
                 trainData[i] = network.getHistory();
                 trainLabels[i] = 1;
             }
@@ -114,7 +134,23 @@ public class Classifier {
                 testData[i] = network.getHistory();
                 testLabels[i] = 0;
             } else {
-                network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                if (type == 'a') {
+                    if (Math.random() < 0.334) {
+                        network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                    } else if (Math.random() < 0.5) {
+                        network.updateNodesTTimes(generator.generateAlternatingData(inputDataLength));
+                    } else {
+                        network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                    }
+                } else if (type == 'b') {
+                    network.updateNodesTTimes(generator.generateRandomlyDistributedData(inputDataLength, 0.7));
+                } else if (type == 'c') {
+                    network.updateNodesTTimes(generator.generateAlternatingData(inputDataLength));
+                } else if (type == 'd') {
+                    network.updateNodesTTimes(generator.generateAlternatingDataWithNoise(inputDataLength));
+                } else {
+                    throw new IllegalStateException("Unknown input type: " + type);
+                }
                 testData[i] = network.getHistory();
                 testLabels[i] = 1;
             }
@@ -152,6 +188,18 @@ public class Classifier {
         }
 
         return accuracy;
+    }
+
+    public RandomNetwork getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(RandomNetwork network) {
+        this.network = network;
+    }
+
+    public void generateNetwork() {
+        network.generateGraph(rules);
     }
 
     private void plotHistory(int iteration) {

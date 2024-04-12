@@ -1,6 +1,7 @@
 public class CANReservoirSimulator {
     public static void main(String[] args) {
         ExperimentRunner experiment = new ExperimentRunner();
+        GeneticAlgorithm ga = new GeneticAlgorithm();
 
         experiment.rulesXNetwork();
         //experiment.writeToFile();
@@ -8,6 +9,7 @@ public class CANReservoirSimulator {
         //experiment.testAllRulesOnCustomNetwork();
         //experiment.someExamples(100, 91);
         //experiment.averageOverXRuns(100);
-
+        //experiment.rule91onPD();
+        //ga.run();
     }
 }

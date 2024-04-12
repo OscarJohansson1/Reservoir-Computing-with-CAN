@@ -20,6 +20,10 @@ public class InputGenerator {
     public int[][] generateRandomlyDistributedData(int nDataPoints, double distribution) {
         int[][] data = new int[nDataPoints][dataLength];
         char sampledChar;
+        /*
+        if (Math.random() < 0.5) {
+            distribution = 1 - distribution;
+        }*/
         for (int i = 0; i < nDataPoints; i++) {
             if (Math.random() < distribution) {
                 sampledChar = 'a';
